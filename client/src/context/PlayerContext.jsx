@@ -22,7 +22,7 @@ export function PlayerProvider({ children }) {
   const utterance = useRef(null);
   const queueRef = useRef([]);
   const currentRef = useRef(null);
-  const keepAlive = useRef(null); // Chrome 15-second bug workaround
+  const speechWatchdog = useRef(null);
   const voices = useRef([]);
 
   const supported =
@@ -49,26 +49,32 @@ export function PlayerProvider({ children }) {
     );
   };
 
-  /**
-   * Chrome pauses SpeechSynthesis after ~15 seconds of continuous speech.
-   * Workaround: periodically pause/resume to reset Chrome's internal timer.
-   */
-  const startKeepAlive = () => {
-    clearInterval(keepAlive.current);
-    keepAlive.current = setInterval(() => {
-      if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
-        window.speechSynthesis.pause();
-        window.speechSynthesis.resume();
-      }
-    }, 10_000);
-  };
+  const stopSpeechWatchdog = () => clearInterval(speechWatchdog.current);
 
-  const stopKeepAlive = () => clearInterval(keepAlive.current);
+  // Some browsers can stop speech without firing onend/onerror. Do not let
+  // the visual player pretend that it is still narrating in that situation.
+  const startSpeechWatchdog = (voice) => {
+    stopSpeechWatchdog();
+    speechWatchdog.current = setInterval(() => {
+      const synth = window.speechSynthesis;
+      if (
+        utterance.current === voice &&
+        !synth.speaking &&
+        !synth.pending &&
+        !synth.paused
+      ) {
+        stopProgress();
+        stopSpeechWatchdog();
+        setPlaying(false);
+        setNarrationError('Narration stopped unexpectedly. Tap Play to continue.');
+      }
+    }, 1000);
+  };
 
   const reset = () => {
     if (supported) window.speechSynthesis.cancel();
     stopProgress();
-    stopKeepAlive();
+    stopSpeechWatchdog();
     utterance.current = null;
     setCurrent(null);
     setPlaying(false);
@@ -92,7 +98,7 @@ export function PlayerProvider({ children }) {
     }
 
     stopProgress();
-    stopKeepAlive();
+    stopSpeechWatchdog();
     setCurrent(article);
     setProgress(0);
     setBriefComplete(false);
@@ -112,28 +118,28 @@ export function PlayerProvider({ children }) {
       if (utterance.current !== voice) return;
       setPlaying(true);
       startProgress();
-      startKeepAlive();
+      startSpeechWatchdog(voice);
     };
 
     voice.onpause = () => {
       if (utterance.current !== voice) return;
       setPlaying(false);
       stopProgress();
-      stopKeepAlive();
+      stopSpeechWatchdog();
     };
 
     voice.onresume = () => {
       if (utterance.current !== voice) return;
       setPlaying(true);
       startProgress();
-      startKeepAlive();
+      startSpeechWatchdog(voice);
     };
 
     voice.onend = () => {
       if (utterance.current !== voice) return;
       setPlaying(false);
       stopProgress();
-      stopKeepAlive();
+      stopSpeechWatchdog();
 
       // Auto-advance to next article in queue
       const items = queueRef.current;
@@ -150,7 +156,7 @@ export function PlayerProvider({ children }) {
       if (utterance.current !== voice) return;
       setPlaying(false);
       stopProgress();
-      stopKeepAlive();
+      stopSpeechWatchdog();
       setNarrationError('Narration could not start. Check your device sound and try Play again.');
     };
 
@@ -164,13 +170,13 @@ export function PlayerProvider({ children }) {
     if (playing) {
       window.speechSynthesis.pause();
       stopProgress();
-      stopKeepAlive();
+      stopSpeechWatchdog();
       setPlaying(false);
     } else if (window.speechSynthesis.paused) {
       window.speechSynthesis.resume();
       setPlaying(true);
       startProgress();
-      startKeepAlive();
+      if (utterance.current) startSpeechWatchdog(utterance.current);
     } else {
       speak(current);
     }
@@ -196,7 +202,7 @@ export function PlayerProvider({ children }) {
     return () => {
       if (supported) window.speechSynthesis.cancel();
       stopProgress();
-      stopKeepAlive();
+      stopSpeechWatchdog();
     };
   }, []);
 
