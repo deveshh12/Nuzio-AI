@@ -16,12 +16,14 @@ export function PlayerProvider({ children }) {
   const [progress, setProgress] = useState(0);
   const [queue, setQueueState] = useState([]);
   const [briefComplete, setBriefComplete] = useState(false);
+  const [narrationError, setNarrationError] = useState('');
 
   const timer = useRef();
   const utterance = useRef(null);
   const queueRef = useRef([]);
   const currentRef = useRef(null);
   const keepAlive = useRef(null); // Chrome 15-second bug workaround
+  const voices = useRef([]);
 
   const supported =
     typeof window !== 'undefined' && 'speechSynthesis' in window;
@@ -29,6 +31,13 @@ export function PlayerProvider({ children }) {
   // Keep refs in sync
   useEffect(() => { queueRef.current = queue; }, [queue]);
   useEffect(() => { currentRef.current = current; }, [current]);
+  useEffect(() => {
+    if (!supported) return undefined;
+    const loadVoices = () => { voices.current = window.speechSynthesis.getVoices(); };
+    loadVoices();
+    window.speechSynthesis.addEventListener('voiceschanged', loadVoices);
+    return () => window.speechSynthesis.removeEventListener('voiceschanged', loadVoices);
+  }, [supported]);
 
   const stopProgress = () => clearInterval(timer.current);
 
@@ -65,14 +74,21 @@ export function PlayerProvider({ children }) {
     setPlaying(false);
     setProgress(0);
     setBriefComplete(false);
+    setNarrationError('');
   };
 
   const speak = (article) => {
-    if (!article || !supported) return;
+    if (!article) return;
+    if (!supported) {
+      setNarrationError('Audio narration is not supported in this browser. Try Chrome, Safari, or Edge.');
+      return;
+    }
 
     // Cancel any existing speech
-    if (window.speechSynthesis.speaking || window.speechSynthesis.paused) {
-      window.speechSynthesis.cancel();
+    const synth = window.speechSynthesis;
+    synth.resume();
+    if (synth.speaking || synth.pending || synth.paused) {
+      synth.cancel();
     }
 
     stopProgress();
@@ -80,14 +96,33 @@ export function PlayerProvider({ children }) {
     setCurrent(article);
     setProgress(0);
     setBriefComplete(false);
+    setNarrationError('');
 
     const voice = new SpeechSynthesisUtterance(
       `${article.headline}. ${article.summary}`
     );
     utterance.current = voice;
     voice.rate = 0.96;
+    voice.pitch = 1;
+    voice.voice = voices.current.find((item) => item.lang === 'en-IN')
+      || voices.current.find((item) => item.lang.startsWith('en-'))
+      || null;
 
     voice.onstart = () => {
+      if (utterance.current !== voice) return;
+      setPlaying(true);
+      startProgress();
+      startKeepAlive();
+    };
+
+    voice.onpause = () => {
+      if (utterance.current !== voice) return;
+      setPlaying(false);
+      stopProgress();
+      stopKeepAlive();
+    };
+
+    voice.onresume = () => {
       if (utterance.current !== voice) return;
       setPlaying(true);
       startProgress();
@@ -116,9 +151,11 @@ export function PlayerProvider({ children }) {
       setPlaying(false);
       stopProgress();
       stopKeepAlive();
+      setNarrationError('Narration could not start. Check your device sound and try Play again.');
     };
 
-    window.speechSynthesis.speak(voice);
+    synth.speak(voice);
+    synth.resume();
   };
 
   const toggle = () => {
@@ -170,6 +207,7 @@ export function PlayerProvider({ children }) {
         playing,
         progress,
         briefComplete,
+        narrationError,
         supported,
         speak,
         toggle,

@@ -17,6 +17,7 @@ import Waveform from '../components/Waveform';
 import { usePlayer } from '../context/PlayerContext';
 import '../brief.css';
 import '../brief-done.css';
+import '../narration-error.css';
 
 const categories = ['All', 'AI & Tech', 'Markets', 'Startup', 'Science'];
 
@@ -38,6 +39,7 @@ export default function Feed({ logout }) {
     playing,
     progress,
     briefComplete,
+    narrationError,
     speak,
     toggle,
     next,
@@ -193,7 +195,12 @@ export default function Feed({ logout }) {
       )}
 
       {/* ── Status strip ── */}
-      {briefComplete ? (
+      {narrationError ? (
+        <div className="narration-error" role="alert">
+          {narrationError}
+          <button onClick={() => speak(featured)}>Try again</button>
+        </div>
+      ) : briefComplete ? (
         <div className="brief-done">
           <span>✓</span>
           <div>

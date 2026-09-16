@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { api } from '../api/client';
 import Logo from '../components/Logo';
+import '../google-button.css';
 
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
@@ -13,6 +14,8 @@ export default function Login({ success }) {
 
   // Keep a stable ref so the GSI callback always sees the latest finish fn
   const finishRef = useRef(null);
+  const googleButtonRef = useRef(null);
+  const googleInitialisedRef = useRef(false);
 
   const finish = useCallback(data => {
     localStorage.setItem('nuzio_token', data.token);
@@ -44,11 +47,22 @@ export default function Login({ success }) {
     };
 
     const initialise = () => {
+      if (googleInitialisedRef.current || !googleButtonRef.current) return;
+      googleInitialisedRef.current = true;
       window.google.accounts.id.initialize({
         client_id: googleClientId,
         callback: handleGoogleResponse,
         auto_select: false,
         cancel_on_tap_outside: true,
+      });
+      window.google.accounts.id.renderButton(googleButtonRef.current, {
+        type: 'standard',
+        theme: 'outline',
+        size: 'large',
+        text: 'continue_with',
+        shape: 'pill',
+        logo_alignment: 'left',
+        width: Math.min(360, Math.max(250, googleButtonRef.current.clientWidth)),
       });
       setGoogleReady(true);
     };
@@ -82,14 +96,6 @@ export default function Login({ success }) {
 
   const googleSignIn = async () => {
     setError('');
-    if (googleReady) {
-      window.google.accounts.id.prompt(notification => {
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          setError('Google sign-in popup was blocked. Check the allowed origin in Google Cloud Console.');
-        }
-      });
-      return;
-    }
     // Dev fallback when no VITE_GOOGLE_CLIENT_ID is set
     if (!googleClientId) {
       try {
@@ -100,9 +106,7 @@ export default function Login({ success }) {
       } finally {
         setBusy(false);
       }
-    } else {
-      setError('Google sign-in is still loading. Please try again in a moment.');
-    }
+    } else setError('Google sign-in is still loading. Please try again in a moment.');
   };
 
   return (
@@ -154,9 +158,17 @@ export default function Login({ success }) {
           </button>
         </form>
         <div className="or"><span />or<span /></div>
-        <button className="google" type="button" disabled={busy} onClick={googleSignIn}>
-          <b>G</b> Continue with Google
-        </button>
+        {googleClientId ? (
+          <div
+            ref={googleButtonRef}
+            className={`google-google-button${googleReady ? '' : ' loading'}`}
+            aria-label="Continue with Google"
+          />
+        ) : (
+          <button className="google" type="button" disabled={busy} onClick={googleSignIn}>
+            <b>G</b> Continue with Google
+          </button>
+        )}
         <button
           className="switch"
           type="button"

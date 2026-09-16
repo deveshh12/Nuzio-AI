@@ -1,0 +1,2 @@
+.google-google-button{display:flex;align-items:center;justify-content:center;width:100%;min-height:44px}.google-google-button.loading{border:1px solid rgba(255,255,255,.12);border-radius:999px;background:#202020}.google-google-button.loading::after{content:'Loading Google sign-in…';color:#aaa;font-size:12px}
+@media(max-width:360px){.google-google-button iframe{max-width:100%!important}}
