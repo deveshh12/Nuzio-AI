@@ -1,0 +1,5 @@
+{
+  "name": "nuzio-ai",
+  "private": true,
+  "scripts": { "seed": "npm --prefix server run seed" }
+}

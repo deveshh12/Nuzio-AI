@@ -1,0 +1,217 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;1,500&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Reset & base ── */
+* { box-sizing: border-box; }
+html { background: #0d0d0d; }
+body { margin: 0; background: #0d0d0d; color: #f7f7f7; font-family: Inter, Arial, sans-serif; }
+button, input { font: inherit; }
+button { cursor: pointer; transition: transform .18s, opacity .18s; }
+button:disabled { cursor: not-allowed; opacity: .52; }
+button:not(:disabled):active { transform: scale(.97); }
+button:focus-visible,
+input:focus-visible,
+a:focus-visible { outline: 2px solid #9a82ff; outline-offset: 3px; }
+
+/* ═══════════════════════════════
+   LOGIN PAGE
+═══════════════════════════════ */
+.login {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  position: relative;
+  background: #0a0a0a;
+}
+.login-glow {
+  position: absolute;
+  width: min(700px, 130vw);
+  height: 520px;
+  top: -100px;
+  background: radial-gradient(ellipse, rgba(89,56,202,.32), rgba(13,13,13,0) 68%);
+  filter: blur(8px);
+}
+.login-panel {
+  width: min(100%, 440px);
+  z-index: 1;
+  padding: clamp(24px, 6vh, 58px) clamp(20px, 5vw, 28px) 30px;
+  min-height: min(760px, 100svh);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Logo */
+.logo { font-size: 22px; font-weight: 600; display: flex; align-items: center; gap: 7px; letter-spacing: -1px; }
+.logo b { color: #8a6bff; }
+.soundmark { display: flex; align-items: center; gap: 2px; height: 22px; }
+.soundmark i { width: 2px; border-radius: 5px; background: linear-gradient(#4c9cff, #a166ff); display: block; }
+.soundmark i:nth-child(1) { height: 8px; }
+.soundmark i:nth-child(2) { height: 17px; }
+.soundmark i:nth-child(3) { height: 22px; }
+.soundmark i:nth-child(4) { height: 13px; }
+
+/* Intro */
+.intro { align-self: stretch; margin-top: clamp(50px, 12vh, 135px); }
+.intro h1 { font-size: clamp(28px, 6vw, 38px); margin: 0; letter-spacing: -1.4px; }
+.intro h2 { font: italic clamp(27px, 6vw, 37px) 'Playfair Display', Georgia, serif; color: #8a72ff; margin: 0; }
+.intro p { font-size: 14px; line-height: 1.65; color: #aaa19d; margin-top: 18px; }
+
+/* Form */
+.login form { width: 100%; margin-top: auto; }
+.login label span { display: block; font-size: 11px; color: #aaa; margin: 12px 2px 3px; }
+.login input {
+  height: 52px;
+  width: 100%;
+  border: 1px solid rgba(255,255,255,.13);
+  background: rgba(255,255,255,.055);
+  border-radius: 13px;
+  color: #fff;
+  padding: 0 16px;
+  outline: none;
+}
+.login input:focus { border-color: #846aff; }
+
+/* Buttons */
+.primary {
+  border: 0;
+  color: white;
+  width: 100%;
+  height: 53px;
+  margin-top: 14px;
+  border-radius: 999px;
+  background: linear-gradient(110deg, #7c5cfc, #4f8cff);
+  font-weight: 600;
+}
+.error { font-size: 12px; color: #ff8c96; margin: 9px 0; }
+.or { display: flex; gap: 10px; align-items: center; width: 100%; font-size: 11px; color: #777; margin: 15px 0; }
+.or span { height: 1px; background: #303030; flex: 1; }
+.google { height: 58px; width: 100%; background: #fff; color: #151515; border: 0; border-radius: 999px; font-weight: 600; }
+.google b { color: #4285f4; font-size: 22px; margin-right: 12px; }
+.switch { background: none; border: 0; color: #a68fff; font-size: 12px; margin: 14px 0; }
+.login small { font-size: 10px; color: #686868; text-align: center; }
+.login u { color: #9a80ff; }
+
+/* ═══════════════════════════════
+   FEED PAGE (card-based layout)
+═══════════════════════════════ */
+.feed {
+  background: #0d0d0d;
+  min-height: 100svh;
+  padding: 26px max(20px, calc((100% - 1120px) / 2)) 186px;
+}
+.feed header { display: flex; justify-content: space-between; align-items: center; margin: 2px 0 26px; }
+
+/* Logo (small variant) */
+.logo-small { font-size: 11px; gap: 3px; }
+.logo-small .soundmark { height: 10px; gap: 1px; }
+.logo-small .soundmark i { width: 1px; }
+.logo-small .soundmark i:nth-child(1) { height: 4px; }
+.logo-small .soundmark i:nth-child(2) { height: 8px; }
+.logo-small .soundmark i:nth-child(3) { height: 10px; }
+.logo-small .soundmark i:nth-child(4) { height: 6px; }
+
+.head-actions { display: flex; gap: 9px; }
+.head-actions button {
+  border: 1px solid rgba(255,255,255,.12);
+  width: 37px; height: 37px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  background: #191919; color: #ddd;
+  position: relative;
+}
+.head-actions i { position: absolute; width: 7px; height: 7px; background: #8b65ff; border-radius: 50%; right: 5px; top: 5px; }
+.head-actions .out { width: 30px; height: 30px; background: none; border: 0; color: #777; }
+
+/* Category nav */
+nav { display: flex; gap: 7px; overflow-x: auto; padding: 0 0 12px; border-bottom: 1px solid #222; scrollbar-width: none; }
+nav button { white-space: nowrap; color: #aaa; border: 1px solid #292929; background: #181818; border-radius: 999px; padding: 8px 17px; font-size: 11px; }
+nav .selected { background: #5bd596; color: #102217; border-color: #5bd596; font-weight: 600; }
+
+/* Brief intro section */
+.brief { padding: 23px 2px 17px; }
+.brief p { font: 10px 'DM Mono', monospace; letter-spacing: 1px; color: #8871ff; margin: 0 0 5px; }
+.brief h1 { font: 500 clamp(27px, 3vw, 34px) 'Playfair Display', Georgia, serif; margin: 0; letter-spacing: -1.2px; }
+.brief h2 { font: italic clamp(25px, 3vw, 30px) 'Playfair Display', Georgia, serif; color: #895eff; margin: 0; }
+.brief div { font-size: 11px; color: #54d493; margin-top: 9px; }
+.brief div b { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #4ce398; margin-right: 5px; }
+.brief div span { color: #777; }
+
+/* Article cards */
+.cards { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 310px), 1fr)); }
+.card, .skeleton { min-height: 207px; border-radius: 16px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.10); padding: 17px; transition: .2s; }
+.skeleton { border: 0; background: linear-gradient(100deg, #171717 20%, #242424 38%, #171717 58%); background-size: 200% 100%; animation: shimmer 1.25s infinite; }
+.card.current { border-color: #775cf9; box-shadow: 0 0 25px rgba(103,71,255,.15); }
+.card-meta { display: flex; align-items: center; gap: 5px; color: #8b68ff; font: 10px 'DM Mono', monospace; }
+.card-meta a { display: flex; align-items: center; gap: 5px; color: #8b68ff; text-decoration: none; font-weight: 500; }
+.card-meta time { margin-left: auto; color: #757575; }
+.card h3 { font: 500 21px 'Playfair Display', Georgia, serif; line-height: 1.18; margin: 12px 0 9px; }
+.card p { color: #aaa; font-size: 12px; line-height: 1.55; margin: 0; }
+.card footer { display: flex; align-items: center; margin-top: 15px; color: #777; gap: 9px; font-size: 10px; }
+.card footer small { margin-left: auto; color: #8265fa; }
+.card-play { color: white; border: 0; background: linear-gradient(130deg, #785cff, #528cff); width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; }
+.card footer em { font-style: normal; }
+
+/* Fixed player bar */
+.player {
+  position: fixed; z-index: 4;
+  bottom: max(14px, env(safe-area-inset-bottom));
+  left: 50%; transform: translateX(-50%);
+  width: min(calc(100% - 32px), 600px);
+  border: 1px solid rgba(255,255,255,.11);
+  background: #191919f5;
+  backdrop-filter: blur(12px);
+  padding: 13px 16px 14px;
+  border-radius: 18px;
+  box-shadow: 0 14px 40px #000;
+}
+.player-top { display: flex; align-items: baseline; gap: 8px; overflow: hidden; }
+.player-top span { color: #8b6aff; font: 9px 'DM Mono', monospace; white-space: nowrap; }
+.player-top b { font-size: 11px; color: #66d49a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Waveform */
+.wave { height: 39px; margin: 8px 0 5px; display: flex; align-items: center; gap: 3px; overflow: hidden; }
+.wave i { display: block; flex: 0 0 5px; border-radius: 3px; background: #735af5; opacity: .75; }
+.wave.active i { animation: beat .65s ease-in-out infinite alternate; }
+
+/* Timeline */
+.timeline { height: 3px; background: #3a3a3a; border-radius: 5px; }
+.timeline i { background: #805fff; height: 100%; display: block; border-radius: inherit; }
+
+/* Player controls */
+.controls { display: flex; justify-content: center; align-items: center; gap: 26px; margin-top: 9px; }
+.controls button { border: 0; background: #303030; color: #ddd; width: 35px; height: 35px; border-radius: 50%; display: grid; place-items: center; }
+.controls .big-play { width: 52px; height: 52px; margin-top: -4px; background: linear-gradient(135deg, #7759fc, #4c91ff); border: 2px solid #8c6aff; box-shadow: 0 0 22px #6949d9; }
+.controls em { position: absolute; right: 16px; font-size: 10px; color: #aaa; font-style: normal; background: #303030; padding: 8px; border-radius: 10px; }
+
+/* Error state */
+.feed-error { display: grid; gap: 10px; margin-top: 20px; border: 1px solid #663e50; background: #25171c; padding: 16px; border-radius: 14px; color: #ff9fa7; font-size: 13px; }
+.feed-error button { width: max-content; border: 1px solid #724759; background: #312027; color: #fff; border-radius: 10px; padding: 8px 10px; display: flex; gap: 6px; align-items: center; }
+.feed-error small { color: #b7888e; }
+
+/* ── Animations ── */
+@keyframes beat { to { transform: scaleY(.45); opacity: 1; } }
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+/* ── Responsive: mobile (≤ 520px) ── */
+@media (max-width: 520px) {
+  .feed { padding: 20px 16px 178px; }
+  .feed header { margin-bottom: 20px; }
+  .card h3 { font-size: 19px; }
+  .cards { grid-template-columns: 1fr; }
+  .player { width: calc(100% - 24px); bottom: max(8px, env(safe-area-inset-bottom)); }
+  .controls { gap: 22px; }
+  .intro h1 { font-size: 28px; }
+  .intro h2 { font-size: 27px; }
+  .login-panel { padding-top: clamp(20px, 5vh, 40px); }
+}
+
+/* ── Responsive: tablet & laptop (≥ 900px) ── */
+@media (min-width: 900px) {
+  .feed { padding-top: 42px; }
+  .brief { padding-top: 31px; }
+  .card { min-height: 224px; }
+}

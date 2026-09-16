@@ -1,0 +1,202 @@
+/* ── Brief (Feed) screen layout ── */
+.brief-screen {
+  width: 100%;
+  max-width: 480px;
+  min-height: 100svh;
+  margin: auto;
+  padding: 25px 20px 130px;
+  background: #0d0d0d;
+  color: #f6f5f4;
+  position: relative;
+  overflow: hidden;
+}
+
+.brief-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 38px 0 20px;
+}
+
+.brief-screen .head-actions { gap: 10px; }
+.brief-screen .head-actions .out {
+  width: 37px;
+  height: 37px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.12);
+  background: #191919;
+  color: #aaa;
+  display: grid;
+  place-items: center;
+  transition: background .2s, color .2s;
+}
+.brief-screen .head-actions .out:hover {
+  background: #2a1520;
+  color: #ff8a8a;
+  border-color: #5a2535;
+}
+
+/* ── Category nav ── */
+.category-nav {
+  display: flex;
+  gap: 7px;
+  overflow: auto;
+  border-bottom: 1px solid #242424;
+  padding: 0 0 9px;
+  scrollbar-width: none;
+}
+.category-nav button {
+  flex: 0 0 auto;
+  padding: 8px 16px;
+  border: 1px solid #2b2b2b;
+  border-radius: 99px;
+  background: #1a1a1a;
+  color: #959595;
+  font-size: 11px;
+}
+.category-nav .selected {
+  background: #55d59a;
+  border-color: #55d59a;
+  color: #102217;
+}
+
+/* ── Intro section ── */
+.brief-intro { padding: 17px 1px 14px; }
+.brief-intro p { margin: 0 0 5px; color: #8c71ff; font: 9px 'DM Mono', monospace; letter-spacing: 1px; }
+.brief-intro h1 { margin: 0; font: 500 25px 'Playfair Display', Georgia, serif; letter-spacing: -1px; }
+.brief-intro h2 { margin: 0; color: #8c63ff; font: italic 25px 'Playfair Display', Georgia, serif; }
+.brief-intro div { margin-top: 9px; color: #57d49b; font-size: 10px; }
+.brief-intro div b { display: inline-block; width: 7px; height: 7px; background: #55df98; border-radius: 50%; margin-right: 5px; }
+.brief-intro div span { color: #858585; }
+
+/* ── Featured player card ── */
+.featured-player,
+.featured-skeleton {
+  min-height: 345px;
+  padding: 17px;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 20px;
+  background: #202020;
+  box-shadow: 0 5px 18px #0006;
+}
+.featured-skeleton {
+  background: linear-gradient(100deg, #191919, #282828, #191919);
+  background-size: 200% 100%;
+  animation: shimmer 1.25s infinite;
+}
+
+.featured-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font: 9px 'DM Mono', monospace;
+}
+.featured-top span { color: #8a69ff; background: #2d2a37; padding: 7px 11px; border-radius: 99px; }
+.featured-top small { color: #777; }
+
+.featured-player h3 { font: 500 20px/1.27 'Playfair Display', Georgia, serif; margin: 24px 0 26px; letter-spacing: -.7px; }
+
+.featured-meta { display: flex; align-items: center; gap: 7px; font: 9px 'DM Mono', monospace; color: #777; }
+.featured-meta a { display: flex; gap: 4px; align-items: center; text-decoration: none; color: #956fff; }
+.featured-meta time { color: #aaa; }
+.save-story { margin-left: auto; border: 0; background: transparent; color: #777; font: 9px 'DM Mono', monospace; }
+
+.featured-player > p { height: 31px; overflow: hidden; margin: 18px 0 9px; color: #454545; font: 12px/1.45 'Playfair Display', Georgia, serif; }
+.featured-player .wave { height: 45px; margin: 3px 0 3px; gap: 3px; }
+.featured-player .wave i { background: #795cff; flex-basis: 5px; }
+
+.player-progress { height: 3px; background: #464646; border-radius: 99px; }
+.player-progress i { height: 100%; display: block; background: #795cff; border-radius: 99px; }
+.time-row { display: flex; justify-content: space-between; margin-top: 6px; color: #777; font: 9px 'DM Mono', monospace; }
+
+/* ── Feature playback controls ── */
+.feature-controls { display: flex; align-items: center; justify-content: center; gap: 20px; margin-top: 12px; }
+.feature-controls button { display: grid; place-items: center; border: 0; border-radius: 50%; width: 42px; height: 42px; background: #363636; color: #ddd; }
+.feature-controls .feature-play { width: 57px; height: 57px; background: linear-gradient(135deg, #775afc, #6284ff); border: 2px solid #8b66ff; box-shadow: 0 0 22px #6949d9; }
+.feature-controls em { position: absolute; right: 42px; color: #ccc; background: #393939; border-radius: 11px; padding: 8px; font: 10px Inter, Arial; }
+
+/* ── Narrating strip ── */
+.narrating-strip {
+  display: flex;
+  gap: 7px;
+  align-items: flex-start;
+  margin-top: 13px;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 13px;
+  background: #191919;
+  color: #57d49b;
+  font-size: 10px;
+  line-height: 1.4;
+}
+.narrating-strip b { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+
+/* ── Dock (bottom fixed bar) ── */
+.brief-dock {
+  position: fixed;
+  z-index: 5;
+  bottom: max(18px, env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: min(calc(100% - 40px), 400px);
+  height: 63px;
+  padding: 0 38px;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 35px;
+  background: #161616;
+  box-shadow: 0 12px 35px #000;
+}
+.brief-dock > button:not(.dock-play) { display: grid; gap: 4px; justify-items: center; border: 0; background: transparent; color: #aaa; }
+.brief-dock small { font: 7px 'DM Mono', monospace; color: #777; }
+.dock-play {
+  position: relative;
+  top: -19px;
+  display: grid;
+  place-items: center;
+  width: 61px;
+  height: 61px;
+  border-radius: 50%;
+  border: 2px solid #59d49a;
+  background: linear-gradient(135deg, #775afc, #6284ff);
+  color: white;
+  box-shadow: 0 0 25px #6949d9;
+}
+
+/* ── Responsive: desktop (≥ 700px) ── */
+@media (min-width: 700px) {
+  body { background: radial-gradient(circle at 50% 25%, #191327, #0d0d0d 45%); }
+  .brief-screen {
+    max-width: 540px;          /* slightly wider on desktop */
+    box-shadow: 0 0 0 1px #2a2a2a, 0 25px 80px #000;
+    border-radius: 30px;
+    min-height: 800px;
+    margin: 24px auto;
+    padding: 30px 28px 130px;
+  }
+  .brief-dock { bottom: 42px; }
+  .brief-intro h1 { font-size: 28px; }
+  .brief-intro h2 { font-size: 27px; }
+  .featured-player h3 { font-size: 22px; }
+}
+
+/* ── Responsive: short screens ── */
+@media (max-height: 740px) {
+  .brief-screen { padding-top: 6px; }
+  .brief-header { margin-top: 10px; }
+  .brief-intro { padding: 11px 1px; }
+  .featured-player { min-height: 315px; }
+  .featured-player h3 { margin: 18px 0; }
+  .brief-dock { bottom: 7px; }
+}
+
+/* ── Responsive: small phones (< 380px) ── */
+@media (max-width: 380px) {
+  .brief-screen { padding: 20px 14px 120px; }
+  .brief-header { margin: 20px 0 14px; }
+  .feature-controls { gap: 14px; }
+  .feature-controls .feature-play { width: 50px; height: 50px; }
+  .feature-controls button { width: 38px; height: 38px; }
+}
